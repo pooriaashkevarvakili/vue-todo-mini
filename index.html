@@ -15,16 +15,19 @@
 <button class="addBtn" @click="addTodo">اضافه کردن به لیست</button>
         </div>
         <ul >
-        <li @click="item.completed=!item.completed"  v-for="(item,index) in todos" :key="index"
-        :class="{'checked':item.completed}"
-        >{{item.text}} <button @click="deleteTodo(index)" class="close">X</button></li>
+     <todo-item
+     v-for="(item,index) in todos" :key="index"
+     :item="item"
+     @todo-deleted="deleteTodo(index)"
+     @checked="item.completed=!item.completed"
+     ></todo-item>
     
 
         </ul>
     </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script >
-        Vue.createApp({
+      const App=  Vue.createApp({
             data(){
          return{
           input:'',
@@ -54,7 +57,18 @@
                     this.todos.splice(index,1)
                 }
             },
-        }).mount('#app')
+        })
+        App.component('TodoItem',{
+            template:`
+            <li @click="$emit('checked')"  
+        :class="{'checked':item.completed}"
+        >{{item.text}} <button @click="$emit('todo-deleted')" class="close">X</button></li>
+            
+            `,
+            props:['item']
+
+        })
+       App.mount('#app')
     </script>
 </body>
 </html>
